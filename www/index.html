@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ENGINEER CHOICE - Pro Sound Console</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    
+    
+    <div class="dj-container">
+       
+        
+       
+      <!-- Header -->
+        <div style="position: relative; text-align: center; margin-bottom: 20px;">
+            <!-- Left Download Icon -->
+            <button type="button" onclick="toggleDownloadModal()" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;" title="Download Music">📥</button>
+
+            <!-- Tapaiko exact original header code (Untouched) -->
+           <h1><img src="logo.png" alt="Logo" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; object-fit: cover;"> ENGINEER CHOICE</h1>
+            <p class="subtitle">Offline Event Sound Console</p>
+
+            <!-- Right Search Icon -->
+            <button type="button" onclick="toggleSearchModal()" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;" title="Search Songs">🔍</button>
+        </div>
+
+
+
+        
+        <!-- Horizontal Category Pills (Blur & Yellow Theme) -->
+        <div class="category-tabs">
+           <button class="tab-btn active" onclick="filterCategory('all', event)">All Tracks</button>
+
+<button class="tab-btn" onclick="filterCategory('Old Hindi', event)">🎵 Old Hindi</button>
+<button class="tab-btn" onclick="filterCategory('Hindi Songs', event)">🎵 Hindi Songs</button>
+<button class="tab-btn" onclick="filterCategory('Nepali Songs', event)">🎵 Nepali Songs</button>
+<button class="tab-btn" onclick="filterCategory('Mangal Dhun', event)">🎺 Mangal Dhun</button>
+<button class="tab-btn" onclick="filterCategory('Wedding Entry', event)">👑 Wedding Entry</button>
+        </div>
+
+        <!-- Playlist Section -->
+        <div class="playlist-section">
+            <h2>Tracks Playlist</h2>
+            <ul id="songList">
+                <p class="loading-text">Loading tracks from database...</p>
+            </ul>
+        </div>
+
+        <!-- BOTTOM STICKY PLAYER BOX (Blur & Yellow Glassmorphism) -->
+        <div class="player-box">
+            <div class="player-info">
+                <h3 id="currentTitle">No Track Selected</h3>
+                <p id="currentSub">Ready to Play</p>
+            </div>
+            
+            <!-- Custom Player Controls -->
+            <div class="player-controls">
+                <button class="control-btn" id="playPauseBtn" onclick="togglePlayPause()">▶</button>
+                <button class="control-btn" id="prevBtn" onclick="playPrevious()">⏮</button>
+                <button class="control-btn" id="nextBtn" onclick="playNext()">⏭</button>
+                <button class="control-btn" id="loopBtn" onclick="toggleLoop()">🔁</button>
+                <button class="control-btn" id="downloadBtn" onclick="downloadCurrentSong()">⬇</button>
+               
+                <div class="progress-container">
+                    <input type="range" id="progressBar" value="0" max="100" step="1" oninput="seekAudio(this.value)">
+                    <div class="time-labels">
+                        <span id="currentTime">00:00</span>
+                        <span id="durationTime">00:00</span>
+                    </div>
+                </div>
+       <!-- Download Box (Player bar bhanda mathi huna paryo) -->
+
+</div>
+
+<!-- Bottom Player Bar -->
+<div class="player-bar">
+  <!-- Tapaiko aafno player controls yeta hunxa -->
+</div>
+</div>
+</div>
+</div>
+            <!-- Hidden native audio element -->
+            <audio id="audioPlayer"></audio>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+<!-- DOWNLOAD MODAL POPUP -->
+<div id="downloadModal" class="custom-modal" style="display:none;">
+    <div class="modal-content">
+        <h3>📥 Download Song (YouTube)</h3>
+        <input type="text" id="ytUrlInput" placeholder="YouTube Link (URL) yeta paste garnus..." style="width: 100%; padding: 8px; margin-top: 10px; background: #222; border: 1px solid #ffcc00; color: #fff; border-radius: 6px; box-sizing: border-box;">
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+            <button onclick="handleYtDownload()" class="close-modal-btn" style="background: #ffcc00; color: #000;">Download</button>
+            <button onclick="toggleDownloadModal()" class="close-modal-btn" style="background: #444; color: #fff;">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- SEARCH MODAL POPUP -->
+<div id="searchModal" class="custom-modal" style="display:none;">
+    <div class="modal-content">
+        <h3>🔍 Search Songs</h3>
+        <input type="text" id="popupSearchInput" oninput="filterSongsLive()" placeholder="Geet ko naam lekhnus (e.g. Pehle bhi main)..." style="width: 100%; padding: 8px; margin-top: 10px; background: #222; border: 1px solid #ffcc00; color: #fff; border-radius: 6px; box-sizing: border-box;">
+        
+        <button onclick="toggleSearchModal()" class="close-modal-btn" style="margin-top: 15px; background: #ffcc00; color: #000;">Close</button>
+    </div>
+</div>
