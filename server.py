@@ -39,8 +39,7 @@ def download_audio():
                 }
             },
         }
-
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(yt_url, download=False)
             audio_url = info.get('url')
             song_title = info.get('title', 'Unknown Title')
