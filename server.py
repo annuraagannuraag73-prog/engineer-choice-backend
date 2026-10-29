@@ -25,39 +25,49 @@ def download_audio():
 
     yt_url = data.get('url')
 
-    try:
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'quiet': True,
-            'no_warnings': True,
-            'cookiefile': 'cookies.txt',  
-            'nocheckcertificate': True,
-            'geo_bypass': True,
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android', 'web'],
-                    'skip': ['dash', 'hls']
-                }
+    # Standard options with fallback clients
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'quiet': True,
+        'no_warnings': True,
+        'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
+        'nocheckcertificate': True,
+        'geo_bypass': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['ios', 'mweb', 'android', 'web'],
+                'player_skip': ['configs', 'webpage']
             }
         }
-        
+    }
+
+    try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(yt_url, download=False)
+            
+            # Yedi direct stream link vetiye ma
             audio_url = info.get('url')
             song_title = info.get('title', 'Unknown Title')
 
-        if audio_url:
-            print(f"Successfully extracted: {song_title}")
-            return jsonify({
-                'success': True, 
-                'download_url': audio_url,
-                'title': song_title
-            })
-        else:
-            return jsonify({'success': False, 'error': 'Audio stream link payena'}), 400
+            # Yedi requested format inside formats array
+            if not audio_url and 'formats' in info:
+                # Find best audio format
+                audio_formats = [f for f in info['formats'] if f.get('acodec') != 'none' and f.get('vcodec') == 'none']
+                if audio_formats:
+                    audio_url = audio_formats[-1].get('url')
+
+            if audio_url:
+                print(f"Successfully extracted: {song_title}")
+                return jsonify({
+                    'success': True, 
+                    'download_url': audio_url,
+                    'title': song_title
+                })
+            else:
+                return jsonify({'success': False, 'error': 'Audio stream link payena'}), 400
 
     except Exception as e:
-        print("Error:", e)
+        print("Error during extraction:", e)
         return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
