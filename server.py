@@ -15,13 +15,17 @@ def download_audio():
 
     yt_url = data.get('url')
 
-  try:
-        # yt-dlp options to extract direct audio stream URL with anti-bot bypass
+    try:
+        # yt-dlp options with multi-client anti-bot bypass
         ydl_opts = {
             'format': 'bestaudio/best',
             'quiet': True,
             'no_warnings': True,
-            'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['ios', 'mweb', 'android', 'web']
+                }
+            },
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
