@@ -4,4 +4,4 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-CMD sh -c "uvicorn server.py:app --host 0.0.0.0 --port ${PORT:-10000}"
+CMD sh -c "python -m uvicorn server:app --host 0.0.0.0 --port ${PORT:-10000}"
