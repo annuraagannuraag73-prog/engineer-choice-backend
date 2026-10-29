@@ -26,16 +26,20 @@ def download_audio():
     yt_url = data.get('url')
 
     try:
-        ydl_opts = {
+       ydl_opts = {
             'format': 'bestaudio/best',
             'quiet': True,
             'no_warnings': True,
             'cookiefile': 'cookies.txt',  
+            'nocheckcertificate': True,
+            'geo_bypass': True,
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['ios', 'mweb', 'android', 'web']
+                    'player_client': ['android', 'web'],
+                    'skip': ['dash', 'hls']
                 }
             },
+        
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
