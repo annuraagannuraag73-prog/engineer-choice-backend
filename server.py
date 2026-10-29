@@ -27,10 +27,11 @@ def download_audio():
 
     try:
         # yt-dlp options with multi-client anti-bot bypass
-        ydl_opts = {
+      ydl_opts = {
             'format': 'bestaudio/best',
             'quiet': True,
             'no_warnings': True,
+            'cookiefile': 'cookies.txt',  # <--- YO LINE THAPNUS!
             'extractor_args': {
                 'youtube': {
                     'player_client': ['ios', 'mweb', 'android', 'web']
