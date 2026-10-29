@@ -26,7 +26,7 @@ def download_audio():
     yt_url = data.get('url')
 
     try:
-       ydl_opts = {
+        ydl_opts = {
             'format': 'bestaudio/best',
             'quiet': True,
             'no_warnings': True,
@@ -38,8 +38,7 @@ def download_audio():
                     'player_client': ['android', 'web'],
                     'skip': ['dash', 'hls']
                 }
-            },
-        
+            }
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -51,7 +50,7 @@ def download_audio():
             print(f"Successfully extracted: {song_title}")
             return jsonify({
                 'success': True, 
-                'download_url': audio_url, # <-- 'audioUrl' ko sato 'download_url' banako
+                'download_url': audio_url,
                 'title': song_title
             })
         else:
@@ -59,7 +58,7 @@ def download_audio():
 
     except Exception as e:
         print("Error:", e)
-        return jsonify({'success': False, 'error': str(e)}), 500 # <-- 'message' ko sato 'error' banako
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
     print("Python Flask Server running with yt-dlp...")
