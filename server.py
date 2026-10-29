@@ -39,10 +39,7 @@ def download_audio():
             },
         }
 
-        # Check if cookies.txt exists on server for stable authentication
-        if os.path.exists('cookies.txt'):
-            ydl_opts['cookiefile'] = 'cookies.txt'
-
+      
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(yt_url, download=False)
             audio_url = info.get('url')
