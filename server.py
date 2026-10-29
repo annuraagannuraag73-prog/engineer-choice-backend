@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# 1. Root route - Browser ma kholda 404 audaina, server active xa vanera dekhauxa
+# 1. Root route
 @app.route('/', methods=['GET'])
 def home():
     return jsonify({
@@ -14,24 +14,23 @@ def home():
         'message': 'Engineer Choice Backend is running successfully!'
     }), 200
 
-# 2. Download route - App bata audio link nikalna ko lagi
+# 2. Download route
 @app.route('/download', methods=['POST'])
 def download_audio():
     data = request.get_json(silent=True)
     print("Received data from frontend:", data)
 
     if not data or 'url' not in data:
-        return jsonify({'success': False, 'message': 'URL missing'}), 400
+        return jsonify({'success': False, 'error': 'URL missing'}), 400
 
     yt_url = data.get('url')
 
     try:
-        # yt-dlp options with multi-client anti-bot bypass
         ydl_opts = {
             'format': 'bestaudio/best',
             'quiet': True,
             'no_warnings': True,
-            'cookiefile': 'cookies.txt',  # <--- YO LINE THAPNUS!
+            'cookiefile': 'cookies.txt',  
             'extractor_args': {
                 'youtube': {
                     'player_client': ['ios', 'mweb', 'android', 'web']
@@ -48,16 +47,16 @@ def download_audio():
             print(f"Successfully extracted: {song_title}")
             return jsonify({
                 'success': True, 
-                'audioUrl': audio_url,
+                'download_url': audio_url, # <-- 'audioUrl' ko sato 'download_url' banako
                 'title': song_title
             })
         else:
-            return jsonify({'success': False, 'message': 'Audio stream link payena'}), 400
+            return jsonify({'success': False, 'error': 'Audio stream link payena'}), 400
 
     except Exception as e:
         print("Error:", e)
-        return jsonify({'success': False, 'message': str(e)}), 500
+        return jsonify({'success': False, 'error': str(e)}), 500 # <-- 'message' ko sato 'error' banako
 
 if __name__ == '__main__':
-    print("Python Flask Server running with yt-dlp on port 5000...")
-    app.run(port=5000, debug=True)
+    print("Python Flask Server running with yt-dlp...")
+    app.run(host='0.0.0.0', port=10000)
