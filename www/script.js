@@ -307,6 +307,7 @@ function filterSongsLive() {
 }
 
 // --- RENDER BACKEND YOUTUBE DOWNLOAD FUNCTION ---
+// --- RENDER BACKEND YOUTUBE DOWNLOAD FUNCTION ---
 async function handleYtDownload() {
     const ytUrlInput = document.getElementById('ytUrlInput');
     if (!ytUrlInput) return;
@@ -325,19 +326,17 @@ async function handleYtDownload() {
     alert("Downloading Has Been Started Please Wait");
 
     try {
-        // Input box bata direct fresh value nikalne (Error message assign huna nadine)
-const youtubeUrl = document.getElementById('ytUrlInput').value.trim();
+        const youtubeUrl = document.getElementById('ytUrlInput').value.trim();
 
-// Server ma request pathaune
-const response = await fetch('https://engineer-choice-backend.onrender.com/download', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ url: youtubeUrl }) // Sahi format ma pathaune
-});
+        const response = await fetch('https://engineer-choice-backend.onrender.com/download', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: youtubeUrl }) 
+        });
 
-const data = await response.json();
+        const data = await response.json();
         
         if (data && data.success) {
             alert("Download Successful: " + data.title);
@@ -348,17 +347,26 @@ const data = await response.json();
                 id: "yt_" + Date.now(),
                 title: data.title,
                 category: selectedCategory,
-                fileUrl: data.audioUrl 
+                fileUrl: data.download_url // <-- Backend ko 'download_url' use garne
             };
 
             globalSongs.push(newSong);
             saveSongToDB(newSong);
             renderSongs(globalSongs);
 
+            // Device ma automatic MP3 file download garaune logic
+            const a = document.createElement('a');
+            a.href = data.download_url;
+            a.download = `${data.title}.mp3`;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
             toggleDownloadModal();
             ytUrlInput.value = "";
         } else {
-            alert("Error: " + (data.message || "Unknown error"));
+            alert("Error: " + (data.error || "Unknown error")); // <-- Backend le 'error' pathaucha
         }
     } catch (error) {
         console.error("Download Error:", error);
