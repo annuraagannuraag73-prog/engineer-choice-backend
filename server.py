@@ -1,10 +1,20 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import yt_dlp
+import os
 
 app = Flask(__name__)
 CORS(app)
 
+# 1. Root route - Browser ma kholda 404 audaina, server active xa vanera dekhauxa
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({
+        'success': True, 
+        'message': 'Engineer Choice Backend is running successfully!'
+    }), 200
+
+# 2. Download route - App bata audio link nikalna ko lagi
 @app.route('/download', methods=['POST'])
 def download_audio():
     data = request.get_json(silent=True)
@@ -27,6 +37,10 @@ def download_audio():
                 }
             },
         }
+
+        # Check if cookies.txt exists on server for stable authentication
+        if os.path.exists('cookies.txt'):
+            ydl_opts['cookiefile'] = 'cookies.txt'
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(yt_url, download=False)
