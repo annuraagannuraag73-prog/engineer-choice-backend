@@ -322,40 +322,48 @@ async function handleYtDownload() {
     alert("Download suru hudai xa, kripya kshyan parkhinus...");
 
     try {
-        const apiUrl = `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(youtubeUrl)}`;
+        const API_URL = "https://engineer-choice-backend-1.onrender.com/download";
 
-        console.log("Capacitor HTTP bata request pathaidai xa...");
+        console.log("Capacitor HTTP POST bata request pathaidai xa...");
 
-        // Capacitor native HTTP request (CORS bypass garna lai)
         const options = {
-            url: apiUrl,
+            url: API_URL,
             headers: {
                 'Content-Type': 'application/json'
+            },
+            data: {
+                url: youtubeUrl
             }
         };
 
-        // CapacitorHttp check garne (yedi available xa vane)
         let responseData;
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) {
-            const result = await window.Capable || window.Capacitor.Plugins.CapacitorHttp.get(options);
+            // Native POST request via CapacitorHttp
+            const result = await window.Capacitor.Plugins.CapacitorHttp.post(options);
             responseData = result.data;
         } else {
-            // Fallback to normal fetch if not in native app
-            const res = await fetch(apiUrl);
+            // Fallback to fetch POST request if tested in browser
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: youtubeUrl })
+            });
             responseData = await res.json();
         }
 
         console.log("API Response:", responseData);
 
-        if (responseData && responseData.status && responseData.data && responseData.data.dl) {
-            const audioDownloadUrl = responseData.data.dl;
-            const audioTitle = responseData.data.title || "Unknown YouTube Audio";
+        // Extracting correct keys from backend response
+        const audioDownloadUrl = responseData.download_url || responseData.dl || responseData.url;
+        const audioTitle = responseData.title || "Unknown YouTube Audio";
 
+        if (responseData.success && audioDownloadUrl) {
             console.log("Download Link Payo:", audioDownloadUrl);
-
             await saveAudioToCategory(audioTitle, audioDownloadUrl, selectedCategory);
         } else {
-            alert("Error: Audio link vetiyena, feri try garnus!");
+            alert("Error: " + (responseData.error || "Audio link vetiyena, feri try garnus!"));
         }
 
     } catch (error) {
